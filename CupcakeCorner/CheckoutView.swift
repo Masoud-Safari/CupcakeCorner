@@ -13,6 +13,9 @@ struct CheckoutView: View {
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
     
+    @State private var placeOrderAlert = false
+    @State private var placeOrderAlertMessage = ""
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -44,6 +47,11 @@ struct CheckoutView: View {
         } message: {
             Text(confirmationMessage)
         }
+        .alert("Check out failed", isPresented: $placeOrderAlert) {
+            
+        } message: {
+            Text("\(placeOrderAlertMessage)")
+        }
     }
     
     func placeOrder() async {
@@ -64,7 +72,8 @@ struct CheckoutView: View {
             confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
             showingConfirmation = true
         } catch {
-            print("Check out failed: \(error.localizedDescription)")
+            placeOrderAlertMessage = error.localizedDescription
+            placeOrderAlert = true
         }
     }
 }
